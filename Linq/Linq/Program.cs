@@ -1,4 +1,5 @@
 ﻿using Linq;
+using System.Collections;
 using System.Linq;
 
 namespace Linq
@@ -8,6 +9,16 @@ namespace Linq
         private static readonly IEnumerable<Animal> _animals = CreateAnimalList();
         private static readonly IEnumerable<Animal> _animals2 = CreateAnimalList2();
         private static readonly IEnumerable<Zoo> _zoos = CreateZooList();
+        private static readonly IEnumerable<Tiger> _tigers = CreateTigerList();
+
+        private static IEnumerable<Tiger> CreateTigerList()
+        {
+            return new List<Tiger>
+            {
+                new Tiger {Name = "Tiger 1"},
+                new Tiger {Name = "Tiger 2"}
+            };
+        }
         private static IEnumerable<Animal> CreateAnimalList()
         {
             return new List<Animal>
@@ -35,6 +46,8 @@ namespace Linq
         new Animal { Type = "Fish", Name = "Dory", Breed = "Trout", Age = 4, ZooName = "B Zoo" },
         new Animal { Type = "Mammal", Name = "Teddy", Breed = "Bear", Age = 8, ZooName = "Tm Zoo" },
         new Animal { Type = "Fish", Name = "Amyyyyy", Breed = "Rainbowfish", Age = 4, ZooName = "Cj Zoo" },
+        new Animal { Type = "Fish", Name = "Amyyyyy", Breed = "Rainbowfish", Age = 4, ZooName = "Cj Zoo" },
+        new Animal { Type = "Mammal", Name = "Alfreda", Breed = "Lion", Age = 4, ZooName = "Tm Zoo" },
             };
         }
 
@@ -42,9 +55,9 @@ namespace Linq
         {
             return new List<Zoo>
             {
-                new Zoo { Name = "Tm Zoo"},
-                new Zoo { Name = "B Zoo"},
-                new Zoo { Name = "Cj Zoo"}
+                new Zoo { Name = "Tm Zoo", Employees = new List<string>{ "Ana", "Maria", "Vlad"}},
+                new Zoo { Name = "B Zoo", Employees = new List<string>{ "Diana", "Adelin", "Mircea"}},
+                new Zoo { Name = "Cj Zoo", Employees = new List<string>{ "Dan", "Daria", "Darian"}}
             };
         }
 
@@ -139,7 +152,7 @@ namespace Linq
                 else
                     return 0;
             });
-            //Console.WriteLine(noOfMammals);
+            //Console.WriteLine($"No of mammals: {noOfMammals}");
 
             var avarageAge = _animals.Average(animal => animal.Age);
             //Console.WriteLine(avarageAge);
@@ -161,9 +174,72 @@ namespace Linq
             var range = Enumerable.Range(0, 34);
             //PrintLoop(range);
 
-            foreach (var animal in _animals)
+            /*foreach (var animal in _animals)
             {
                 Console.WriteLine(animal.IsMammal() + " " + animal.CreateId() + " " + animal.GenerateValueFromName());
+            }*/
+
+            var groupByType = _animals.GroupBy(animal => animal.Type);
+            /*foreach (IGrouping<string, Animal> animalGroup in groupByType)
+            {
+                Console.WriteLine(animalGroup.Key);
+                PrintLoop(animalGroup);
+            }*/
+
+                ILookup<string, Animal> lookup = _animals
+                .ToLookup(
+                animal => animal.ZooName,
+                animal => animal);
+            /*foreach(IGrouping<string, Animal> group in lookup)
+            {
+                Console.WriteLine(group.Key);
+                PrintLoop(group);
+            }*/
+
+            IList genericList = new ArrayList();
+            genericList.Add(new Animal { Type = "Mammal", Name = "Alfred", Breed = "Lion", Age = 4, ZooName = "Tm Zoo" });
+            genericList.Add("un animal");
+            genericList.Add(3);
+            genericList.Add(new Animal { Type = "Bird", Name = "Chipi", Breed = "Peacock", Age = 1, ZooName = "Tm Zoo" });
+
+            var animalList = genericList.OfType<Animal>();
+            //PrintLoop(animalList);
+
+            var orderedList = _animals
+                .OrderBy(_animals => _animals.ZooName)
+                .ThenBy(animal => animal.Name);
+            //PrintLoop(orderedList);
+
+            IEnumerable<int> indexes = Enumerable.Range(1, _animals.Count());
+            var indexedList = indexes.Zip(_animals.OrderBy(animal => animal.Name), (first, second) => first + " - " + second);
+            //PrintLoop(indexedList);
+            
+            var selManyList = _zoos.SelectMany(zoo => zoo.Employees, (zoo, employee) => new {zoo.Name, employee});
+            //PrintLoop(selManyList);
+
+            var onlyBirds = _animals
+                .OrderBy(animal => animal.Type)
+                .TakeWhile(animal => animal.Type.Equals("Bird"));
+            //PrintLoop(onlyBirds);
+
+            var noBirds = _animals
+                .OrderBy(animal => animal.Type)
+                .SkipWhile(animal => animal.Type.Equals("Bird"));
+            //PrintLoop(noBirds);
+
+            var distinct = _animals2.Distinct();
+            //PrintLoop(distinct);
+
+            //var noOfFish = _animals.Sum(animal => animal.Type.Equals("Fish") ? 1 : 0);
+            var noOfFish = _animals
+                .Where(animal => animal.Type.Equals("Fish"))
+                .Sum(animal => 1);
+            //Console.WriteLine(noOfFish);
+
+            var castList = _tigers.Cast<Animal>();
+            foreach (var animal in castList)
+            {
+                animal.Speak();
             }
         }
     }

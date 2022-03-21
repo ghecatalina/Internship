@@ -9,5 +9,6 @@ namespace Linq
     internal class Zoo
     {
         public string Name { get; set; }
+        public List<string> Employees { get; set; }
     }
 }

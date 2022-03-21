@@ -16,9 +16,14 @@ namespace Linq
 
         public string ZooName { get; set; }
 
+        public void Speak()
+        {
+            Console.WriteLine("Animal speaks");
+        }
+
         public override string ToString()
         {
-            return $"Animal: {this.Name}, {this.Type}, {this.Breed}, age: {this.Age}";
+            return $"Animal: {this.Name}, {this.Type}, {this.Breed}, age: {this.Age} zoo: {this.ZooName}";
         }
 
         public override bool Equals(object? obj)
@@ -35,6 +40,24 @@ namespace Linq
                     && this.Age == other.Age;
             }
         }
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
+    }
+
+    public class Tiger : Animal
+    {
+        public void Speak()
+        {
+            Console.WriteLine("Tiger roars");
+        }
+    }
+
+    public class Lion : Animal
+    {
+
     }
 
     public class AnimalComparer : IEqualityComparer<Animal>
