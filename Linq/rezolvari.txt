@@ -1,0 +1,38 @@
+ //Prob 1
+            var array = new int[] { 8, 2, 3, 3, 5, 6, 5, 8, 9, 10, 1, 12, 2, 2, 25, 8, 16, 2 };
+
+            var cnt = array
+                .GroupBy(n => n)
+                .Select(group => new 
+                {
+                    numar = group.Key,
+                    repetitii = group.Count()
+                });
+
+            //Prob 2
+            var max = array
+                .GroupBy(n => n)
+                .Select(group => new
+                {
+                    numar = group.Key,
+                    repetitii = group.Count()
+                })
+                .MaxBy(group => group.repetitii);
+                
+
+            //Prob 3
+            string[] first = new string[] { "hello", "hi", "max", "good evening", "good day", "good morning", "goodbye" }; 
+            string[] second = new string[] { "whatsup", "how are you", "hello", "bye", "maybe", "hi" };
+            var intersectionH = first
+                .Intersect(second)
+                .Where(str => str.ElementAt(0) == 'h');
+          
+
+            //Prob 4
+            var str = first
+                .Concat(second)
+                .Aggregate("", (prev, next) => prev + next.ElementAt(next.Length - 1));
+            
+
+            //Prob 5
+            var totalEmployee = _zoos.Sum(zoo => zoo.Employees.Count());

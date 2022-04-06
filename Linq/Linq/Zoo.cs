@@ -10,5 +10,15 @@ namespace Linq
     {
         public string Name { get; set; }
         public List<string> Employees { get; set; }
+
+        public override string ToString()
+        {
+            string res = this.Name;
+            foreach(var employee in Employees)
+            {
+                res += " " + employee;
+            }
+            return res;
+        }
     }
 }

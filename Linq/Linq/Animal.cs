@@ -23,7 +23,7 @@ namespace Linq
 
         public override string ToString()
         {
-            return $"Animal: {this.Name}, {this.Type}, {this.Breed}, age: {this.Age} zoo: {this.ZooName}";
+            return $"Animal: {this.Name}, {this.Type}, {this.Breed}, age: {this.Age}";
         }
 
         public override bool Equals(object? obj)

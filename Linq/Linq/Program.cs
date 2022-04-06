@@ -7,6 +7,7 @@ namespace Linq
     class Program
     {
         private static readonly IEnumerable<Animal> _animals = CreateAnimalList();
+        private static readonly IEnumerable<Animal> _animals3 = CreateAnimalList();
         private static readonly IEnumerable<Animal> _animals2 = CreateAnimalList2();
         private static readonly IEnumerable<Zoo> _zoos = CreateZooList();
         private static readonly IEnumerable<Tiger> _tigers = CreateTigerList();
@@ -85,7 +86,7 @@ namespace Linq
                     AnimalName = animal.Name,
                     ZooName = zoo.Name,
                 });
-
+            //PrintLoop(joinZoos);
             var groupJoin = _zoos.GroupJoin(
                 _animals,
                 zoo => zoo.Name,
@@ -115,8 +116,8 @@ namespace Linq
             var intersectList = _animals.Intersect(_animals2, new AnimalComparer());
 
             var exceptList = _animals.Except(_animals2, new AnimalComparer());
-
-            var array = _animals.ToArray();
+            
+            //var array = _animals.ToArray();
 
             var list = _animals.ToList();
 
@@ -157,7 +158,7 @@ namespace Linq
             var avarageAge = _animals.Average(animal => animal.Age);
             //Console.WriteLine(avarageAge);
 
-            var contains = _animals.Contains(new Animal { Type = "Mammal", Name = "Teddy", Breed = "Bear", Age = 8, ZooName = "Tm Zoo" });
+            var contains = _animals.Contains(new Animal { Type = "Mammal", Name = "Teddy", Breed = "Bear", Age = 8, ZooName = "Tm Zoo" }, new AnimalComparer());
             //Console.WriteLine(contains);
 
             var ageSmallerThan3 = _animals.Any(animal => animal.Age < 0);
@@ -166,7 +167,7 @@ namespace Linq
             var ageGreaterThan0 = _animals.All(animal => animal.Age > 0);
             //Console.WriteLine(ageGreaterThan0);
 
-            var listsEqual = _animals.SequenceEqual(_animals2);
+            var listsEqual = _animals.SequenceEqual(_animals3);
             //Console.WriteLine(listsEqual);
 
             var repeatEl3 = Enumerable.Repeat(_animals.ElementAt(3), 4);
@@ -186,7 +187,7 @@ namespace Linq
                 PrintLoop(animalGroup);
             }*/
 
-                ILookup<string, Animal> lookup = _animals
+            ILookup<string, Animal> lookup = _animals
                 .ToLookup(
                 animal => animal.ZooName,
                 animal => animal);
@@ -214,7 +215,7 @@ namespace Linq
             var indexedList = indexes.Zip(_animals.OrderBy(animal => animal.Name), (first, second) => first + " - " + second);
             //PrintLoop(indexedList);
             
-            var selManyList = _zoos.SelectMany(zoo => zoo.Employees, (zoo, employee) => new {zoo.Name, employee});
+            var selManyList = _zoos.SelectMany(zoo => zoo.Employees, (zoo, employee) => new {ZooName = zoo.Name, Employee = employee});
             //PrintLoop(selManyList);
 
             var onlyBirds = _animals
@@ -237,10 +238,70 @@ namespace Linq
             //Console.WriteLine(noOfFish);
 
             var castList = _tigers.Cast<Animal>();
-            foreach (var animal in castList)
+            /*foreach (var animal in castList)
             {
                 animal.Speak();
-            }
+            }*/
+
+            //numele angajatilor care lucrează la zoo-ul în care este animalul cu numele Alfred
+            /*var employess = _zoos
+                .Join(
+                _animals,
+                zoo => zoo.Name,
+                animal => animal.ZooName,
+                (zoo, animal) => new
+                {
+                    EmployeesNames = zoo.Employees,
+                    AnimalName = animal.Name
+                })
+                .Where(group => group.AnimalName.Equals("Alfred"))
+                .Select(groups => groups.EmployeesNames).ToList();*/
+
+            //Prob 1
+            var array = new int[] { 8, 2, 3, 3, 5, 6, 5, 8, 9, 10, 1, 12, 2, 2, 25, 8, 16, 2 };
+
+            var cnt = array
+                .GroupBy(n => n)
+                .Select(group => new 
+                {
+                    numar = group.Key,
+                    repetitii = group.Count()
+                });
+            PrintLoop(cnt);
+            Console.WriteLine();
+            //Prob 2
+            var max = array
+                .GroupBy(n => n)
+                .Select(group => new
+                {
+                    Numar = group.Key,
+                    repetitii = group.Count()
+                })
+                .MaxBy(group => group.repetitii);
+                
+                
+            Console.WriteLine(max);
+            Console.WriteLine();
+
+            //Prob 3
+            string[] first = new string[] { "hello", "hi", "max", "good evening", "good day", "good morning", "goodbye" }; 
+            string[] second = new string[] { "whatsup", "how are you", "hello", "bye", "maybe", "hi" };
+            var intersectionH = first
+                .Intersect(second)
+                .Where(str => str.ElementAt(0) == 'h');
+            PrintLoop(intersectionH);
+            Console.WriteLine();
+
+            //Prob 4
+            var str = first
+                .Concat(second)
+                .Aggregate("", (prev, next) => prev + next.ElementAt(next.Length - 1));
+            Console.WriteLine(str);
+            Console.WriteLine();
+
+            //Prob 5
+            var totalEmployee = _zoos.Sum(zoo => zoo.Employees.Count());
+            Console.WriteLine(totalEmployee);
         }
     }
 }
