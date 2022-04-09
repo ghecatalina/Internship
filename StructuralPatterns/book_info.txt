@@ -1,0 +1,6 @@
+~~Book Book1 written by Author1 has the following details:
+description1
+
+~~Book Book2 written by Author2 has the following details:
+description2
+
